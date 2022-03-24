@@ -16,7 +16,7 @@ func syncFromClassroom(db *sql.DB, srv *classroom.Service) { // adds all new ite
 	if err != nil {
 		log.Fatalf("%+v", err)
 	}
-	for _, b := range a.Courses {
+	for _, b := range a.Courses { // todo: skip archived classes
 		log.Print("COURSE: " + b.Name)
 		r, err := srv.Courses.CourseWork.List(b.Id).Do()
 		if err != nil {
@@ -47,7 +47,7 @@ func syncFromClassroom(db *sql.DB, srv *classroom.Service) { // adds all new ite
 					days, date = getDateInfo(c)
 				}
 
-				_, err = db.Exec(`INSERT INTO Assignments (classid, classname, id, name, url, due, days, aspen, grade, ignored, priority) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`, b.Id, b.Name, c.Id, c.Title, c.AlternateLink, date, false, days, "", 0, false, 0.0)
+				_, err = db.Exec(`INSERT INTO Assignments (classid, classname, id, name, url, due, days, aspen, grade, ignored, priority) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`, b.Id, b.Name, c.Id, c.Title, c.AlternateLink, date, days, "", 0, false, 0.0)
 				if err != nil {
 					log.Fatalf("%+v", err)
 				}
